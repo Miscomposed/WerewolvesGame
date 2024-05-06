@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Werewolf Game Manager</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        textarea {
+            width: 400px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            cursor: pointer;
+            border-radius: 50px;
+        }
+        .dead {
+            color: gray;
+        }
+        .player-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .player-list li {
+            margin-bottom: 10px;
+        }
+        .player-list form {
+            display: inline;
+        }
+        .player-list select {
+            padding: 5px;
+            font-size: 14px;
+        }
+        .player-list button {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .go-to-vote {
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Werewolf Game Manager</h1>
+    <form action="/" method="POST">
+        <textarea name="player_names" placeholder="Enter player names (comma or return-separated)"></textarea><br>
+        <button type="submit">Add Players</button>
+    </form>
+    <form action="/google_classroom" method="GET">
+        <button type="submit">Add Players from Google Classroom</button>
+    </form>
+    <form action="/" method="POST">
+        <button type="submit" name="start_game">Start Game</button>
+        <button type="submit" name="reset_game">Reset Game</button>
+        <button type="submit" name="next_round">Next Round</button>
+    </form>
+    <h2>Players:</h2>
+    <ul class="player-list">
+        {% for player in players %}
+            <li class="{% if player['status'] == 'Dead' %}dead{% endif %}">
+                {{ player['name'] }}
+                <form action="/update" method="POST">
+                    <input type="hidden" name="player_name" value="{{ player['name'] }}">
+                    <select name="role">
+                        <option value="Villager" {% if player.get('role', 'Villager') == 'Villager' %}selected{% endif %}>Villager</option>
+                        <option value="Werewolf" {% if player.get('role') == 'Werewolf' %}selected{% endif %}>Werewolf</option>
+                    </select>
+                    <select name="status">
+                        <option value="Alive" {% if player['status'] == 'Alive' %}selected{% endif %}>Alive</option>
+                        <option value="Dead" {% if player['status'] == 'Dead' %}selected{% endif %}>Dead</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('vote') }}" class="go-to-vote">Go to Voting Page</a>
+</body>
+</html>

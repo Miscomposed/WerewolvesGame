@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Werewolf Game - Voting</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            cursor: pointer;
+            border-radius: 50px;
+            margin-top: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        setTimeout(function() {
+            location.reload();
+        }, 5000); // Refresh the page every 5 seconds
+    </script>
+</head>
+<body>
+    <h1>Werewolf Game - Voting</h1>
+    <form action="/vote" method="POST">
+        <label for="voter">Your Name:</label>
+        <select name="voter" required>
+            {% for player in players %}
+                <option value="{{ player['name'] }}" {% if player['name'] in votes %} disabled {% endif %}>
+                    {{ player['name'] }} {% if player['name'] in votes %} (Voted) {% endif %}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="candidate">Vote For:</label>
+        <select name="candidate" required>
+            {% for player in players %}
+                <option value="{{ player['name'] }}">{{ player['name'] }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit">Submit Vote</button>
+    </form>
+    <h2>Current Votes:</h2>
+    <ul>
+        {% for voter, candidate in votes.items() %}
+            <li>{{ voter }} voted for {{ candidate }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Vote Tally:</h2>
+    <ul>
+        {% for player in players %}
+            {% set vote_count = votes.values()|select('eq', player['name'])|list|length %}
+            <li>{{ player['name'] }}: {{ vote_count }} vote(s)</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
