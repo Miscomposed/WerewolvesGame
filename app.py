@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 players = []
 votes = {}
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -24,6 +25,7 @@ def home():
         return redirect(url_for('home'))
     return render_template('home.html', players=players)
 
+
 @app.route('/update', methods=['POST'])
 def update():
     player_name = request.form['player_name']
@@ -38,6 +40,7 @@ def update():
             break
     return redirect(url_for('home'))
 
+
 @app.route('/vote', methods=['GET', 'POST'])
 def vote():
     if request.method == 'POST':
@@ -48,5 +51,7 @@ def vote():
     alive_players = [player for player in players if player['status'] == 'Alive']
     return render_template('vote.html', players=alive_players, votes=votes)
 
+
 if __name__ == '__main__':
+    app.debug = True
     app.run()
