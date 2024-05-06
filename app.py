@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 
-application = Flask(__name__)
+app = Flask(__name__)
 
 players = []
 votes = {}
